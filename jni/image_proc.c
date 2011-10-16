@@ -11,9 +11,9 @@ static jint height = 480;
 static jint res = 25;	//resolution being downsampled to
 jint threshold;
 jint binary_threshold;
-jint gauss[16][16*16];
-jint lookupTable[255];
-jint kernel[3][3] = {-1,-1,-1,-1,8,-1,-1,-1,-1};
+jint gauss[16][16*16];	//array to hold templates
+jint lookupTable[255];	//lookup table
+jint kernel[3][3] = {-1,-1,-1,-1,8,-1,-1,-1,-1};	//laplacian kernel
 int totalsum;
 float totalmean;
 
@@ -22,12 +22,12 @@ jdouble gauss2D(jdouble a, int x, int y, jdouble sigx, jdouble sigy)
 	return a * exp(-((pow(x,2)/(2*pow(sigx, 2)))+(pow(y, 2)/(2*pow(sigy, 2))))) + 0.05;
 }
 
-jint getVal(jint row, jint col)
+jint getVal(jint row, jint col)	//method to work with 1D arrays as 2D with width as 800
 {
 	return width*row+col;
 }
 
-jint getVal2(jint row, jint col, jint r)
+jint getVal2(jint row, jint col, jint r)	//method to work with 1D arrays as 2D with custom width
 {
 	return r*row+col;
 }
@@ -42,6 +42,7 @@ void fillLookupTable()	//this method fills up the pixel intensity lookup table
 	int i;
 	for(i = 0; i < 255; i++)
 	{
+		//seperate values according to threshold
 		lookupTable[i] = (256/threshold)*(i/(256/threshold));
 		if(threshold == 2)
 		{
@@ -51,7 +52,7 @@ void fillLookupTable()	//this method fills up the pixel intensity lookup table
 	}
 }
 
-void fillGauss()	//this method creates the gaussian dots for each grayscale level
+void fillGauss()	//this method creates the gaussian dots template for each grayscale level
 {
 	int h,i,j;
 	for(h = 0; h < 16; h++)
@@ -135,7 +136,7 @@ Java_nav_bv_CustomView_meanArray(JNIEnv * env,jobject this, jint res_w, jint res
 	(*env) ->ReleaseByteArrayElements(env, frame, frameBuffer,0);
 	return meanArr;
 }
-
+//method runs when adaptive thresholding is active
 JNIEXPORT jintArray JNICALL
 Java_nav_bv_CustomView_meanArrayAdapt(JNIEnv * env,jobject this, jint res_w, jint res_h, jbyteArray frame)
 {
@@ -154,7 +155,7 @@ Java_nav_bv_CustomView_meanArrayAdapt(JNIEnv * env,jobject this, jint res_w, jin
 	totalmean = 0;
 	float x,y;
 
-	for(i=40-3; i < (height-40)+2; i=i+res_h)
+	for(i=40-3; i < (height-40)+2; i=i+res_h)	//loop to downsample image
 	{
 		for(j=200-3; j < (width-200)+2; j=j+res_w)	//iterate through the cropped image every (crop_h/res) pixels
 		{
@@ -176,7 +177,7 @@ Java_nav_bv_CustomView_meanArrayAdapt(JNIEnv * env,jobject this, jint res_w, jin
 
 	sum2 = 0;
 
-	for(i = 0; i < 27; i++)
+	for(i = 0; i < 27; i++)	//loop to perform Laplacian edge detection
 	{
 		for(j = 0; j < 27; j++)
 		{
@@ -205,7 +206,7 @@ Java_nav_bv_CustomView_meanArrayAdapt(JNIEnv * env,jobject this, jint res_w, jin
 			}
 		}
 	}
-	for(i = 0; i < res; i++)
+	for(i = 0; i < res; i++)	//loop to find adaptive threshold
 	{
 		for(j = 0; j < res; j++)
 		{

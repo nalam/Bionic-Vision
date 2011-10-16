@@ -65,6 +65,7 @@ public class bionicvision extends Activity {
 		camera.addCallbackBuffer(new byte[frameSize]);
 		camera.startPreview();
 		
+		//setting up button event listeners
 		final RadioButton radio16 = (RadioButton) findViewById(R.id.radio16);
 		radio16.setOnClickListener(grayscalelevel_listener);
 		final RadioButton radio8 = (RadioButton) findViewById(R.id.radio8);
@@ -78,12 +79,12 @@ public class bionicvision extends Activity {
 
 	}
 	
-	public void onPause()
+	public void onPause()	//for when the app exits
 	{
 		super.onPause();
 		camera.release();
 	}
-
+	//what to do when a button is pressed
 	private OnClickListener grayscalelevel_listener = new OnClickListener() {	//do this when threshold button is pressed
 		public void onClick(View v)
 		{

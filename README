@@ -1,1 +1,19 @@
-This is a test readme file
+This is the readme file for the Bionic Eye app. This is a project I started and worked on as my final year university project. The main goal was reached, but a few side quests still remain :)
+
+To work on this app, first ensure that you have Eclipse, the Android SDK and NDK installed, as well as a C compiler. I recommend you follow the instructions on Android's home page: http://developer.android.com/sdk/installing.html
+
+For setting up the NDK in Ubuntu this guide helped me a lot: http://code.google.com/p/awesomeguy/wiki/JNITutorial
+
+Once this is done, copy this all the contents of this folder into a workspace of your choice. If any incompatibilities arise due to names, the original workspace name was BionicEye. Sometimes Eclipse forgets the location of the SDK when you change workspaces, so ensure you set that again by going Window > Preferences > Android > SDK Location.
+
+It might then give and error and ask you to remove all the "@override" all over the place in the source java files (bionicvision.java and CustomView.java). I admit, I don't know the function of these as they automatically appear, but removing them doesn't have any effect on the program and the compiler stops complaining so...get rid of them!
+
+After that, use your C compiler to compile the native code. In Ubuntu this is just a matter of navigating to the project root directory and typing ndk-build. This will probably be different to Mac and Windows. Once that's done, hit Run in Eclipse and the program should download onto the android device connected to the computer.
+
+One problem I ran into is that if you compile the C code and then straight away click Run in Eclipse, it won't include the newly compiled C code in the build. I don't know if a setting in the android.mk file can fix this, but for me, quickly editing something in one of the java source files before compiling in Eclipse solved the problem.
+
+Just a quick overview of the project:
+
+image_proc.c is where all the number crunching happens. It contains native methods that perform image processing. They are called on every camera preivew frame from CustomView.java. CustomView is a View that is set by bionicvision.java. bionicvision.java also contains all the event listener initializers for the UI buttons. The UI buttons themselves are created in main.xml file located in the res/layout folder.
+
+Any questions or comments email me at naveen.alam@gmail.com

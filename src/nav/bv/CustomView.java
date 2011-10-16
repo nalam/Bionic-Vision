@@ -51,9 +51,7 @@ public class CustomView extends View
 		public void onPreviewFrame(byte[] frame, Camera c)	//where the image processing takes place
 		{
 			//TimingLogger timings = new TimingLogger("TAG", "methodA");
-			//int[] meanArr = new int[res*res];	//array to hold mean values
-			//System.arraycopy(meanArray(res_w, res_h, frame), 0, meanArr, 0, res*res);
-			int check = getAdaptive();
+			int check = getAdaptive();	//check to see if adaptive threshold is set
 			if(check == 0)
 			{ 
 				meanArr = meanArray(res_w,res_h,frame);
@@ -64,8 +62,7 @@ public class CustomView extends View
 			}
 			
 			//timings.addSplit("workA");
-			
-			//System.arraycopy(pixelArray(meanArr, res_w, res_h), 0, pixels, 0, width*height);	
+				
 			pixels = pixelArray(meanArr, res_w, res_h);
 			//timings.addSplit("workB");
 			
