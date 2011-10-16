@@ -1,0 +1,97 @@
+#include <jni.h>
+#include <string.h>
+#include <android/log.h>
+#include <math.h>
+
+#define DEBUG_TAG "NDK_BionicVision"
+
+static jint width = 800;
+static jint height = 480;
+static jint res = 25;	//resolution being downsampled to
+
+jdouble gauss2D(jdouble a, int x, int y, jdouble sigx, jdouble sigy)
+{
+	return a * exp(-((pow(x,2)/(2*pow(sigx, 2)))+(pow(y, 2)/(2*pow(sigy, 2))))) + 0.05;
+}
+
+jint getVal(jint row, jint col)
+{
+	return width*row+col;
+}
+
+jint getVal2(jint row, jint col, jint r)
+{
+	return r*row+col;
+}
+
+JNIEXPORT jdoubleArray JNICALL
+Java_nav_bv_CustomView_fillmask(JNIEnv * env,jobject this, jint res_w, jint res_h)
+{
+	jdoubleArray multi_mask;
+	multi_mask = (*env)->NewDoubleArray(env, res_h*res_w);
+	jdouble mask_buffer[res_h*res_w];
+	int i,j;
+
+	for(i = -8; i < 8; i++)
+	{
+		for(j = -8; j < 8; j++)
+		{
+			mask_buffer[getVal2(j+8,i+8,16)] = gauss2D(1,i,j,2.2,2.2);
+		}
+	}
+	(*env)->SetDoubleArrayRegion(env, multi_mask, 0, res_h*res_w, mask_buffer);
+	return multi_mask;
+}
+
+/*JNIEXPORT jintArray JNICALL
+Java_nav_bv_CustomView_meanArray(JNIEnv * env,jobject this, jint res_w, jint res_h, jint res, jbyteArray frame)
+{
+	jintArray meanArr;
+	meanArr = (*env)->NewIntArray(env, res*res);
+	jint fill[res*res];
+	jint a,b,i,j,k,l = 0;
+
+	//jbyte frameBuffer[width*height];
+	jbyte *frameBuffer = (*env) ->GetByteArrayElements(env,frame,0);
+
+	//(*env)->GetByteArrayRegion(env, frame, 0, width*height, frameBuffer);
+
+	for(i=40; i < height-40; i+res_h)
+	{
+		for(j=200; j < width-200; j+res_w)
+		{
+			jint mean = 0;
+			for(k = i; k < res_h+i; k++)
+			{
+				for(l = j; l < res_w+j; l++)
+				{
+					mean += 0xff & frameBuffer[getVal(k,l)];
+				}
+			}
+			fill[getVal2(a,b,res)] = mean/((res_h)*(res_w));
+			a++;
+		}
+		a=0;
+		b++;
+	}
+
+	(*env)->SetIntArrayRegion(env, meanArr, 0, res*res, fill);
+	(*env) ->ReleaseByteArrayElements(env, frame, frameBuffer,0);
+	return meanArr;
+
+}*/
+JNIEXPORT jintArray JNICALL
+Java_nav_bv_CustomView_meanArray(JNIEnv * env,jobject this, jint res_w, jint res_h, jint res, jbyteArray frame)
+{
+  jintArray meanArr;
+  meanArr = (*env)->NewIntArray(env, res*res);
+  jbyte *frameBuffer = (*env) ->GetByteArrayElements(env,frame,0);
+  jint fill[res*res];
+  jint a,b,i,j,k,l = 0;
+  
+  
+  (*env)->SetIntArrayRegion(env, meanArr, 0, res*res, fill);
+  (*env) ->ReleaseByteArrayElements(env, frame, frameBuffer,0);
+  return meanArr;
+  
+}

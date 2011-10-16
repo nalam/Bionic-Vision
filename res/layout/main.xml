@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/mainlayout"
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		android:background="#000000">
+		
+		<TextView
+   		android:id="@+id/threshold"
+   		android:text="Greyscale threshold Level"
+   		android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:textSize="15sp"
+   		android:layout_toLeftOf="@id/mainlayout" />
+		
+		<RadioGroup
+			android:id="@+id/leftgroup"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_below="@id/threshold" >
+			
+			<RadioButton android:id="@+id/radio16"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="16"
+				android:checked="true" />
+				
+			<RadioButton android:id="@+id/radio8"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="8" />
+				
+			<RadioButton android:id="@+id/radio4"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="4" />
+				
+			<RadioButton android:id="@+id/radio2"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="2" />
+				
+			<RadioButton android:id="@+id/adaptive_threshold"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="2 (Adaptive + \nLaplace)"
+				android:tag="1" />
+		</RadioGroup>
+</RelativeLayout>
